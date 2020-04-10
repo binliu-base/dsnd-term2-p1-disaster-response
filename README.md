@@ -35,7 +35,7 @@ This is a machine learning pipeline, that:
 A Web application that is built and run using Flask framework.
 
 ## 3. File Description <a name="FileDescription"></a>
-
+<pre>
 D:\WORKSPACE
 |   README.md
 |   
@@ -54,7 +54,7 @@ D:\WORKSPACE
 |       
 \---models
         train_classifier.py
-        
+</pre>        
 
 - ETL Pipeline Preparation-zh.ipynb # notebook to process data
 - ML Pipeline Preparation-zh.ipynb # notebook to train classifier
