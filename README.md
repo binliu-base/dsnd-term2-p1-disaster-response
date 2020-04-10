@@ -35,19 +35,25 @@ This is a machine learning pipeline, that:
 A Web application that is built and run using Flask framework.
 
 ## 3. File Description <a name="FileDescription"></a>
-There are three main folders:
 
-1. data
-    - disaster_categories.csv: datafile of all the categories
-    - disaster_messages.csv: datafile of all the messages
-    - process_data.py: ETL pipeline scripts
-    - DisasterResponse.db: output of the ETL pipeline
-2. models
-    - train_classifier.py: machine learning pipeline scripts to train and export a classifier
-    - classifier.pkl: output of the machine learning pipeline
-3. app
-    - run.py: Flask file to run the web application
-    - templates contains html file for the web application
+- app
+| - template
+| |- master.html  # main page of web app
+| |- go.html  # classification result page of web app
+|- run.py  # Flask file that runs app
+
+- data
+|- disaster_categories.csv  # data to process 
+|- disaster_messages.csv  # data to process
+|- process_data.py
+|- InsertDatabaseName.db   # database to save clean data to
+
+- models
+|- train_classifier.py
+
+- ETL Pipeline Preparation-zh.ipynb # notebook to process data
+- ML Pipeline Preparation-zh.ipynb # notebook to train classifier
+- README.md
 
 ## 4. Requirements <a name="Requirements"></a>    
 
