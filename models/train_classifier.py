@@ -133,9 +133,9 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     for i in range(len(category_names)):
         accuracy = accuracy_score(Y_test.iloc[:, i], Y_pred[:, i])
-        precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i], average="micro")
-        recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i], average="micro")
-        f1 = f1_score(Y_test.iloc[:, i], Y_pred[:, i], average="micro")
+        precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i])
+        recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i])
+        f1 = f1_score(Y_test.iloc[:, i], Y_pred[:, i])
         print("category: {},  accuracy={:.2f}, precision={:.2f}, recall={:.2f}, f1_score={:.2f}".format(category_names[i], accuracy, precision, recall, f1))
 
 
