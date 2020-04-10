@@ -36,20 +36,25 @@ A Web application that is built and run using Flask framework.
 
 ## 3. File Description <a name="FileDescription"></a>
 
-- app
-| - template
-| |- master.html  # main page of web app
-| |- go.html  # classification result page of web app
-|- run.py  # Flask file that runs app
-
-- data
-|- disaster_categories.csv  # data to process 
-|- disaster_messages.csv  # data to process
-|- process_data.py
-|- InsertDatabaseName.db   # database to save clean data to
-
-- models
-|- train_classifier.py
+D:\WORKSPACE
+|   README.md
+|   
++---app
+|   |   run.py
+|   |   
+|   \---templates
+|           go.html
+|           master.html
+|           
++---data
+|       DisasterResponse.db
+|       disaster_categories.csv
+|       disaster_messages.csv
+|       process_data.py
+|       
+\---models
+        train_classifier.py
+        
 
 - ETL Pipeline Preparation-zh.ipynb # notebook to process data
 - ML Pipeline Preparation-zh.ipynb # notebook to train classifier
