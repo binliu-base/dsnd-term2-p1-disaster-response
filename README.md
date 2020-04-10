@@ -40,20 +40,20 @@ D:\WORKSPACE
 |   README.md
 |   
 +---app
-|   |   run.py
+|   |   run.py              //Flask file to run the web application
 |   |   
-|   \---templates
+|   \---templates           //contains html file for the web application
 |           go.html
 |           master.html
 |           
 +---data
-|       DisasterResponse.db
-|       disaster_categories.csv
-|       disaster_messages.csv
-|       process_data.py
+|       DisasterResponse.db      // output of the ETL pipeline
+|       disaster_categories.csv  // datafile of all the categories
+|       disaster_messages.csv    // datafile of all the messages
+|       process_data.py          //ETL pipeline scripts
 |       
 \---models
-        train_classifier.py
+        train_classifier.py      //machine learning pipeline scripts to train and export a classifier
 </pre>        
 
 - ETL Pipeline Preparation-zh.ipynb # notebook to process data
