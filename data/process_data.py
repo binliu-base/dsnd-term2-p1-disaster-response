@@ -25,7 +25,7 @@ def load_data(messages_filepath, categories_filepath):
     categories = pd.read_csv(categories_filepath)  
     df = messages.merge(categories, how='outer', on=['id'])  
 
-    return df
+    return df 
 
 def clean_data(df):
     """Cleans the data:
@@ -53,7 +53,7 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = categories[column].astype(np.int)  
 
-    df.related.replace(2,1,inplace=True)        
+    categories.related.replace(2,1,inplace=True)        
     df.drop('categories', axis = 1, inplace = True)
     df = pd.concat([df,categories],axis=1)
 
