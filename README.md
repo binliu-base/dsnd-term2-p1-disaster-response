@@ -34,7 +34,7 @@ This is a machine learning pipeline, that:
 ### 2.3. Flask Web App
 A Web application that is built and run using Flask framework.
 
-## 3. File Description <a name="FileDescription"></a>
+## 3. Files  <a name="FileDescription"></a>
 <pre>
 D:\WORKSPACE
 |   README.md
