@@ -8,12 +8,12 @@ import string
 
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.stem.porter import PorterStemmer
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn.multioutput import MultiOutputClassifier
+from sklearn.svm import LinearSVC
+
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -46,45 +46,24 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-    """ A series of nested functions to preprocess the text data
-        Functions: 
-            Tokenize Text 
-            remove special characters
-            lemmatize_text
-            remove_stopwords
+    """ Tokenize the text.
+        Args: 
+            text
         Returns:
-            Clean and preprocessed text 
+            Tokenized text
     """       
-    default_stopwords = set(stopwords.words("english"))  
-
-    # Normalize text
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower().strip()  ) 
-
-    def tokenize_text(text):
-        return [w for s in sent_tokenize(text) for w in word_tokenize(s)] 
-
-    def remove_characters(text, characters=string.punctuation.replace('-', '')):
-        tokens = tokenize_text(text)
-        pattern = re.compile('[{}]'.format(re.escape(characters)))
-        return ' '.join(filter(None, [pattern.sub('', t) for t in tokens]))        
-
-    def lemmatize_text(text):
-        tokens = tokenize_text(text)
-        lemmed = [WordNetLemmatizer().lemmatize(w) for w in tokens]
-        # Lemmatize verbs by specifying pos
-        lemmed = [WordNetLemmatizer().lemmatize(w, pos='v') for w in lemmed] 
-        # Reduce words to their stems
-        stemmed = [PorterStemmer().stem(w) for w in text]
-
-        return stemmed
-
-    text = remove_characters(text) # remove punctuation and symbols
-    tokens = lemmatize_text(text) # stemming
-
-    # Remove stop words
-    words = [w for w in tokens if w not in default_stopwords]        
+    # remove special characters and lowercase
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())  
     
-    return ' '.join(tokens)
+    # tokenize
+    tokens = word_tokenize(text)  
+    
+    # lemmatize, remove stopwords   
+    stop_words = stopwords.words("english")
+    lemmatizer = WordNetLemmatizer()
+    tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stop_words]
+
+    return tokens
 
 
 def build_model():
@@ -94,30 +73,21 @@ def build_model():
     Returns:
         cv (scikit-learn GridSearchCV): Grid search model object
     """    
-    forest = RandomForestClassifier(n_estimators = 10, random_state = 2) 
 
     # PRELIMINARY PIPELINE
     pipeline = Pipeline([
-                         ('cvect', CountVectorizer(tokenizer = tokenize)),
-                         ('tfidf', TfidfTransformer()),
-                         ('clf', MultiOutputClassifier(forest))
-                         ])
+                        ('vect', CountVectorizer(tokenizer = tokenize)),
+                        ('tfidf', TfidfTransformer()),
+                        ('clf', MultiOutputClassifier(OneVsRestClassifier(LinearSVC())))
+                        ])
 
     parameters = {
-        'cvect__min_df': [2, 4],
-        'tfidf__use_idf':[True, False],
-        'clf__estimator__n_estimators':[10, 50],
-        'clf__estimator__min_samples_split':[2, 4, 8]
+        # 'vect__ngram_range': ((1, 1), (1, 2)),
+        'vect__max_df': (0.75, 1.0)
     }
 
-    # parameters = {
-    #     'cvect__min_df': [2],
-    #     'tfidf__use_idf':[False],
-    #     'clf__estimator__n_estimators':[10],
-    #     'clf__estimator__min_samples_split':[2]
-    # }
 
-    return GridSearchCV(pipeline, param_grid=parameters, verbose=10, n_jobs= 1)    
+    return GridSearchCV(pipeline, param_grid=parameters)    
 
 def evaluate_model(model, X_test, Y_test, category_names):
     """Prints multi-output classification results
@@ -129,14 +99,23 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Returns:
         None
     """
-    Y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
 
-    for i in range(len(category_names)):
-        accuracy = accuracy_score(Y_test.iloc[:, i], Y_pred[:, i])
-        precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i])
-        recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i])
-        f1 = f1_score(Y_test.iloc[:, i], Y_pred[:, i])
-        print("category: {},  accuracy={:.2f}, precision={:.2f}, recall={:.2f}, f1_score={:.2f}".format(category_names[i], accuracy, precision, recall, f1))
+    # for i in range(len(category_names)):
+    #     accuracy = accuracy_score(Y_test.iloc[:, i], Y_pred[:, i],average='weighted')
+    #     precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
+    #     recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
+    #     f1 = f1_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
+    #     print("category: {},  accuracy={:.2f}, precision={:.2f}, recall={:.2f}, f1_score={:.2f}".format(category_names[i], accuracy, precision, recall, f1))
+
+    for i, col  in enumerate(category_names):
+        ytrue = Y_test[col]
+        ypred = y_pred[:,i]
+        print(col)
+        print(classification_report(ytrue, ypred))        
+        print('-' * 60)    
+
+
 
 
 def save_model(model, model_filepath):
