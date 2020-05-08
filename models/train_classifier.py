@@ -101,13 +101,6 @@ def evaluate_model(model, X_test, Y_test, category_names):
     """
     y_pred = model.predict(X_test)
 
-    # for i in range(len(category_names)):
-    #     accuracy = accuracy_score(Y_test.iloc[:, i], Y_pred[:, i],average='weighted')
-    #     precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
-    #     recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
-    #     f1 = f1_score(Y_test.iloc[:, i], Y_pred[:, i], average='weighted')
-    #     print("category: {},  accuracy={:.2f}, precision={:.2f}, recall={:.2f}, f1_score={:.2f}".format(category_names[i], accuracy, precision, recall, f1))
-
     for i, col  in enumerate(category_names):
         ytrue = Y_test[col]
         ypred = y_pred[:,i]
